@@ -569,6 +569,81 @@ noincr:                       //                       /* } */
 
     UNDIAGONALIZE
 
+    ///////////////////////////////////////////////////////////////////////////
+    // R O U N D   1 1
+    ///////////////////////////////////////////////////////////////////////////
+
+    BYTE $0xc4; BYTE $0xc1; BYTE $0x2d; BYTE $0x6c; BYTE $0xe3   // VPUNPCKLQDQ  YMM4, YMM10, YMM11 /* m[0], m[4], m[2], m[6] */
+    BYTE $0xc4; BYTE $0xc1; BYTE $0x2d; BYTE $0x6d; BYTE $0xeb   // VPUNPCKHQDQ  YMM5, YMM10, YMM11 /* m[1], m[5], m[3], m[7] */
+    BYTE $0xc4; BYTE $0xe3; BYTE $0xfd; BYTE $0x00; BYTE $0xe4   // VPERMQ       YMM4, YMM4, 0xd8   /* 0x1101 1000 = 0xd8 */
+                BYTE $0xd8
+    BYTE $0xc4; BYTE $0xe3; BYTE $0xfd; BYTE $0x00; BYTE $0xed   // VPERMQ       YMM5, YMM5, 0xd8   /* 0x1101 1000 = 0xd8 */
+                BYTE $0xd8
+
+    G1
+    G2
+
+    DIAGONALIZE
+
+    BYTE $0xc4; BYTE $0xc1; BYTE $0x1d; BYTE $0x6c; BYTE $0xe5   // VPUNPCKLQDQ  YMM4, YMM12, YMM13 /* m[8], m[12], m[10], m[14] */
+    BYTE $0xc4; BYTE $0xc1; BYTE $0x1d; BYTE $0x6d; BYTE $0xed   // VPUNPCKHQDQ  YMM5, YMM12, YMM13 /* m[9], m[13], m[11], m[15] */
+    BYTE $0xc4; BYTE $0xe3; BYTE $0xfd; BYTE $0x00; BYTE $0xe4   // VPERMQ       YMM4, YMM4, 0xd8   /* 0x1101 1000 = 0xd8 */
+                BYTE $0xd8
+    BYTE $0xc4; BYTE $0xe3; BYTE $0xfd; BYTE $0x00; BYTE $0xed   // VPERMQ       YMM5, YMM5, 0xd8   /* 0x1101 1000 = 0xd8 */
+                BYTE $0xd8
+
+    G1
+    G2
+
+    UNDIAGONALIZE
+
+    ///////////////////////////////////////////////////////////////////////////
+    // R O U N D   1 2
+    ///////////////////////////////////////////////////////////////////////////
+                                                                                                   /* YMM4 := m[14],  m[4],  m[9], m[13] */
+    BYTE $0xc4; BYTE $0x41; BYTE $0x25; BYTE $0x6c; BYTE $0xc5   // VPUNPCKLQDQ  YMM8, YMM11, YMM13        /*  m[4],  ____,  ____, m[14] */
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xc0   // VPERMQ       YMM8,  YMM8, 0x03         /* m[14],  m[4],  ____,  ____ */ /* xxxx 0011 = 0x03 */
+                BYTE $0x03
+    BYTE $0xc4; BYTE $0x41; BYTE $0x1d; BYTE $0x6d; BYTE $0xcd   // VPUNPCKHQDQ  YMM9, YMM12, YMM13        /*  m[9], m[13],  ____,  ____ */
+    BYTE $0xc4; BYTE $0xc3; BYTE $0x3d; BYTE $0x46; BYTE $0xe1   // VPERM2I128   YMM4,  YMM8,  YMM9, 0x20  /*  m[9], m[13],  ____,  ____ */ /* 0010 0000 = 0x20 */
+                BYTE $0x20
+
+                                                                                                   /* YMM5 := m[10],  m[8], m[15],  m[6] */
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xc4   // VPERMQ       YMM8,  YMM12, 0x02        /* m[10],  m[8],  ____,  ____ */ /* xxxx 0010 = 0x02 */
+                BYTE $0x02
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xcd   // VPERMQ       YMM9,  YMM13, 0x30        /*  ____,  ____, m[15],  ____ */ /* xx11 xxxx = 0x30 */
+                BYTE $0x30
+    BYTE $0xc4; BYTE $0x41; BYTE $0x35; BYTE $0x6c; BYTE $0xcb   // VPUNPCKLQDQ  YMM9,   YMM9, YMM11       /*  ____,  ____, m[15],  m[6] */
+    BYTE $0xc4; BYTE $0xc3; BYTE $0x3d; BYTE $0x46; BYTE $0xe9   // VPERM2I128   YMM5,   YMM8, YMM9, 0x30  /*  m[9], m[13], m[15],  m[6] */ /* 0011 0000 = 0x30 */
+                BYTE $0x30
+
+    G1
+    G2
+
+    DIAGONALIZE
+
+                                                                                                   /* YMM4 :=  m[1],  m[0], m[11],  m[5] */
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xc2   // VPERMQ       YMM8, YMM10, 0x01         /*  m[1],  m[0],  ____,  ____ */ /* xxxx 0001 = 0x01 */
+                BYTE $0x01
+    BYTE $0xc4; BYTE $0x41; BYTE $0x25; BYTE $0x6d; BYTE $0xcc   // VPUNPCKHQDQ  YMM9, YMM11, YMM12        /*  m[5],  ____,  ____, m[11] */
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xc9   // VPERMQ       YMM9,  YMM9, 0x03         /* m[11],  m[5],  ____,  ____ */ /* xxxx 0011 = 0x03 */
+                BYTE $0x03
+    BYTE $0xc4; BYTE $0xc3; BYTE $0x3d; BYTE $0x46; BYTE $0xe1   // VPERM2I128   YMM4,  YMM8, YMM9, 0x20   /*  m[1],  m[0], m[11],  m[5] */ /* 0010 0000 = 0x20 */
+                BYTE $0x20
+
+                                                                                                   /* YMM5 := m[12],  m[2],  m[7],  m[3] */
+    BYTE $0xc4; BYTE $0x41; BYTE $0x2d; BYTE $0x6c; BYTE $0xc5   // VPUNPCKLQDQ  YMM8, YMM10, YMM13        /*  ___,  m[12],  m[2],  ____ */
+    BYTE $0xc4; BYTE $0x43; BYTE $0xfd; BYTE $0x00; BYTE $0xc0   // VPERMQ       YMM8,  YMM8, 0x09         /* m[12],  m[2],  ____,  ____ */ /* xxxx 1001 = 0x09 */
+                BYTE $0x09
+    BYTE $0xc4; BYTE $0x41; BYTE $0x25; BYTE $0x6d; BYTE $0xca   // VPUNPCKHQDQ  YMM9, YMM11, YMM10        /*  ____,  ____,  m[7],  m[3] */
+    BYTE $0xc4; BYTE $0xc3; BYTE $0x3d; BYTE $0x46; BYTE $0xe9   // VPERM2I128   YMM5,  YMM8, YMM9, 0x30   /*  m[9], m[13], m[15],  m[6] */ /* 0011 0000 = 0x30 */
+                BYTE $0x30
+
+    G1
+    G2
+
+    UNDIAGONALIZE
+
     // Reload digest (most current value store in &out)
     MOVQ  out+144(FP),  SI    // SI: &in
     BYTE $0xc5; BYTE $0x7e; BYTE $0x6f; BYTE $0x26               // VMOVDQU YMM12, [rsi]
